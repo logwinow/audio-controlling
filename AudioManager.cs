@@ -12,7 +12,6 @@ namespace AudioControlling
     public class AudioManager : SingletonMono<AudioManager>
     {
         [SerializeField] private AudioTrackSettingsManager _audioTrackSettingsManager;
-        [SerializeField] private bool _dontDestroyOnLoad;
         [SerializeField] private ClassifiedAudioSource[] _audioSources;
 
         private Pool<AudioSource> _pool;
@@ -20,9 +19,6 @@ namespace AudioControlling
 
         protected override void OnAwake()
         {
-            if (_dontDestroyOnLoad)
-                DontDestroyOnLoad(gameObject);
-            
             _poolParent = new GameObject("Pool").transform;
             _poolParent.SetParent(transform);
             
