@@ -11,12 +11,11 @@ namespace AudioControlling
         [SerializeField] private AudioClip _clip;
         [ReadOnly] [SerializeField] private int _id;
         [SerializeField] private bool _isPitched;
-        [SerializeField] private float _pitchMin;
-        [SerializeField] private float _pitchMax;
+        [SerializeField] private float _pitchMin = 0.9f;
+        [SerializeField] private float _pitchMax = 1.1f;
         [SerializeField] private bool _playOneShot;
         [SerializeField] private float _volumeScale = 1f;
         [SerializeField] private bool _loop;
-        [SerializeField] private AudioSourceType _audioSourceType;
         [SerializeField] private string _groupTag;
 
         public AudioClip Clip => _clip;
@@ -33,8 +32,6 @@ namespace AudioControlling
         public float VolumeScale => _volumeScale;
 
         public bool Loop => _loop;
-
-        public AudioSourceType AudioSourceType => _audioSourceType;
 
         public string GroupTag => _groupTag;
 

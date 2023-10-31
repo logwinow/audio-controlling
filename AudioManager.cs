@@ -12,76 +12,42 @@ namespace AudioControlling
     public class AudioManager : SingletonMono<AudioManager>
     {
         [SerializeField] private AudioTrackSettingsManager _audioTrackSettingsManager;
-        [SerializeField] private ClassifiedAudioSource[] _audioSources;
+        [SerializeField] private SourceController _sourcePrefab;
 
-        private Pool<AudioSource> _pool;
-        private Transform _poolParent;
+        private Pool<SourceController> _pool;
 
         protected override void OnAwake()
         {
-            _poolParent = new GameObject("Pool").transform;
-            _poolParent.SetParent(transform);
-            
-            _pool = new Pool<AudioSource>(
+            _pool = new Pool<SourceController>(
                 () =>
                 {
-                    var audioSourceGO = new GameObject("Pool Audio Source");
-                    audioSourceGO.transform.SetParent(_poolParent);
-                    var audioSource = audioSourceGO.AddComponent<AudioSource>();
-                    audioSource.playOnAwake = false;
+                    var source = Instantiate(_sourcePrefab, transform);
 
-                    return audioSource;
+                    return source;
                 },
                 source =>
                 {
                     source.Stop();
-                    source.clip = null;
                 },
                 source =>
                 {
-                    return source.isPlaying;
+                    return source.IsAvailable;
                 });
         }
 
-        public AudioSource PlayInPool(int id)
+        public void Play(int id, SourceController source)
         {
-            var source = _pool.GetOrCreate();
-            
-            Play(id, source);
-
-            return source;
+            Play(_audioTrackSettingsManager.Get(id), source);
         }
 
-        public void StopPooledAudioSource(AudioSource audioSource)
+        public void Play(AudioTrackSettings trackSettings, SourceController source)
         {
-            _pool.Release(audioSource);
-        }
-
-        public void Play(int id, AudioSource audioSource)
-        {
-            Play(_audioTrackSettingsManager.Get(id), audioSource);
-        }
-
-        public void Play(AudioTrackSettings trackSettings, AudioSource audioSource)
-        {
-            audioSource.pitch = trackSettings.IsPitched
-                ? Random.Range(trackSettings.PitchMin, trackSettings.PitchMax)
-                : 1;
-
-            if (trackSettings.PlayOneShot)
-                audioSource.PlayOneShot(trackSettings.Clip, trackSettings.VolumeScale);
-            else
-            {
-                audioSource.loop = trackSettings.Loop;
-                audioSource.clip = trackSettings.Clip;
-                audioSource.volume = trackSettings.VolumeScale;
-                audioSource.Play();
-            }
+            source.Play(trackSettings);
         }
 
         public void Play(AudioTrackSettings trackSettings)
         {
-            var audioSource = GetSource(trackSettings.AudioSourceType);
+            var audioSource = GetSource();
             
             Play(trackSettings, audioSource);
         }
@@ -107,18 +73,9 @@ namespace AudioControlling
             }
         }
 
-        private AudioSource GetSource(AudioSourceType audioSourceType)
+        private SourceController GetSource()
         {
-            return _audioSources
-                .First(classifiedAS => classifiedAS.AudioSourceType == audioSourceType)
-                .AudioSource;
-        }
-
-        [Serializable]
-        private class ClassifiedAudioSource
-        {
-            public AudioSource AudioSource;
-            public AudioSourceType AudioSourceType;
+            return _pool.GetOrCreate();
         }
     }
 }

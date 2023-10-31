@@ -7,14 +7,14 @@ using UnityEngine;
 public class PlaySoundSequence : MonoBehaviour
 {
     [SerializeField] private AudioIDHelper[] _sequence;
-    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private SourceController _source;
 
     private int _current = 0;
 
     public void Next()
     {
-        if (_audioSource)
-            AudioManager.Instance.Play(_sequence[_current++].AudioID, _audioSource);
+        if (_source)
+            AudioManager.Instance.Play(_sequence[_current++].AudioID, _source);
         else
             AudioManager.Instance.Play(_sequence[_current++].AudioID);
 

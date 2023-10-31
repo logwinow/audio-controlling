@@ -9,7 +9,7 @@ namespace AudioControlling.Samples
     {
         [SerializeField] private bool _warmed = true;
         [AudioID] [SerializeField] private int _audioID;
-        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private SourceController _source;
 
         private void Start()
         {
@@ -21,8 +21,8 @@ namespace AudioControlling.Samples
             if (!_warmed)
                 return;
             
-            if (_audioSource)
-                AudioManager.Instance.Play(_audioID, _audioSource);
+            if (_source)
+                AudioManager.Instance.Play(_audioID, _source);
             else
                 AudioManager.Instance.Play(_audioID);
         }
