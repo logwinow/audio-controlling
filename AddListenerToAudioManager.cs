@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using AudioControlling;
 using UnityEngine;
 
-public class AddListenerToAudioManager : MonoBehaviour
+namespace AudioControlling
 {
-    public void AddListener()
+    public class AddListenerToAudioManager : MonoBehaviour
     {
-        AudioManager.Instance.AddListener();
+        public void AddListener()
+        {
+            AudioManager.Instance.AddListener();
+        }
     }
 }

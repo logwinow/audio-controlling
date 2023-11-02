@@ -11,7 +11,7 @@ namespace AudioControlling
 {
     public class AudioManager : SingletonMono<AudioManager>
     {
-        [SerializeField] private AudioTrackSettingsManager _audioTrackSettingsManager;
+        [SerializeField] private AudioSettingsManagerSO _audioSettingsManager;
         [SerializeField] private SourceController _sourcePrefab;
 
         private Pool<SourceController> _pool;
@@ -37,7 +37,7 @@ namespace AudioControlling
 
         public void Play(int id, SourceController source)
         {
-            Play(_audioTrackSettingsManager.Get(id), source);
+            Play(_audioSettingsManager.Get(id), source);
         }
 
         public void Play(AudioTrackSettings trackSettings, SourceController source)
@@ -54,7 +54,7 @@ namespace AudioControlling
         
         public void Play(int id)
         {
-            var trackSettings = _audioTrackSettingsManager.Get(id);
+            var trackSettings = _audioSettingsManager.Get(id);
 
             Play(trackSettings);
         }

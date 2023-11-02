@@ -9,7 +9,7 @@ namespace AudioControlling
     public class AudioTrackSettings
     {
         [SerializeField] private AudioClip _clip;
-        [ReadOnly] [SerializeField] private int _id;
+        [SerializeField] private int _id;
         [SerializeField] private bool _isPitched;
         [SerializeField] private float _pitchMin = 0.9f;
         [SerializeField] private float _pitchMax = 1.1f;

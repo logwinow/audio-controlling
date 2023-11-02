@@ -17,7 +17,7 @@ public class AudioIDPropertyDrawer : PropertyDrawer
 
         property.intValue =
             new EditorGUIPopup<AudioTrackSettings>(label, position,
-                    AudioTrackSettingsManager.Instance.AudioTrackSettings)
+                    AudioSettingsManagerSO.Instance.AudioTrackSettings)
                 .SetSelectedIndex(audioTrack => audioTrack.ID == property.intValue)
                 .SetOptionsNames(track => $"{track.Title} ({track.ID})")
                 .DrawAndGet()?.ID ?? -1;

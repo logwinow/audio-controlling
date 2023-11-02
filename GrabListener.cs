@@ -4,23 +4,26 @@ using System.Collections.Generic;
 using AudioControlling;
 using UnityEngine;
 
-public class GrabListener : MonoBehaviour
+namespace AudioControlling
 {
-    [SerializeField] private bool _onAwake = true;
-    
-    private void Awake()
+    public class GrabListener : MonoBehaviour
     {
-        if (_onAwake)
-            Grab();
-    }
+        [SerializeField] private bool _onAwake = true;
 
-    public void Grab()
-    {
-        if (AudioManager.IsInitialized)
+        private void Awake()
         {
-            AudioManager.Instance.RemoveListener();
+            if (_onAwake)
+                Grab();
         }
 
-        gameObject.AddComponent<AudioListener>();
+        public void Grab()
+        {
+            if (AudioManager.IsInitialized)
+            {
+                AudioManager.Instance.RemoveListener();
+            }
+
+            gameObject.AddComponent<AudioListener>();
+        }
     }
 }

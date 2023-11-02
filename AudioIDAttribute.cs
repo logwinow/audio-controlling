@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class AudioIDAttribute : PropertyAttribute
+namespace AudioControlling
 {
+    [AttributeUsage(AttributeTargets.Field)]
+    public class AudioIDAttribute : PropertyAttribute
+    {
+    }
 }
