@@ -4,27 +4,30 @@ using System.Collections.Generic;
 using AudioControlling;
 using UnityEngine;
 
-public class PlaySoundSequence : MonoBehaviour
+namespace AudioControlling.Samples
 {
-    [SerializeField] private AudioIDHelper[] _sequence;
-    [SerializeField] private SourceController _source;
-
-    private int _current = 0;
-
-    public void Next()
+    public class PlaySoundSequence : MonoBehaviour
     {
-        if (_source)
-            AudioManager.Instance.Play(_sequence[_current++].AudioID, _source);
-        else
-            AudioManager.Instance.Play(_sequence[_current++].AudioID);
+        [SerializeField] private AudioIDHelper[] _sequence;
+        [SerializeField] private SourceController _source;
 
-        if (_current >= _sequence.Length)
-            _current = 0;
-    }
-    
-    [Serializable]
-    private class AudioIDHelper
-    {
-        [SerializeField] [AudioID] public int AudioID;
+        private int _current = 0;
+
+        public void Next()
+        {
+            if (_source)
+                AudioManager.Instance.Play(_sequence[_current++].AudioID, _source);
+            else
+                AudioManager.Instance.Play(_sequence[_current++].AudioID);
+
+            if (_current >= _sequence.Length)
+                _current = 0;
+        }
+
+        [Serializable]
+        private class AudioIDHelper
+        {
+            [SerializeField] [AudioID] public int AudioID;
+        }
     }
 }

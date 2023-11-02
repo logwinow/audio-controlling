@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using AudioControlling;
 using UnityEngine;
 
-public class PlayVariant : MonoBehaviour
+namespace AudioControlling.Samples
 {
-    [SerializeField] private string _groupTag;
-
-    public void Play()
+    public class PlayVariant : MonoBehaviour
     {
-        Debug.Log("Play Variant");
-        
-        AudioManager.Instance.Play(AudioTrackSettingsManager.Instance.GetTrackVariant(_groupTag));
+        [SerializeField] private string _groupTag;
+
+        public void Play()
+        {
+            Debug.Log("Play Variant");
+
+            AudioManager.Instance.Play(AudioSettingsManagerSO.Instance.GetTrackVariant(_groupTag));
+        }
     }
 }

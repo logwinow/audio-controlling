@@ -3,47 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoopSoundWithOffset : MonoBehaviour
+namespace AudioControlling
 {
-    [SerializeField] private AudioSource _source1;
-    [SerializeField] private AudioSource _source2;
-    [SerializeField] private AudioClip _clip;
-    [SerializeField] private float _offset;
-    [SerializeField] private bool _playOnStart = true;
-
-    private AudioSource CurrentSource { get; set; }
-
-    private bool _started;
-
-    private void Start()
+    public class LoopSoundWithOffset : MonoBehaviour
     {
-        if (_playOnStart)
-            Play();
-    }
+        [SerializeField] private AudioSource _source1;
+        [SerializeField] private AudioSource _source2;
+        [SerializeField] private AudioClip _clip;
+        [SerializeField] private float _offset;
+        [SerializeField] private bool _playOnStart = true;
 
-    public void Play()
-    {
-        Play(_source1);
+        private AudioSource CurrentSource { get; set; }
 
-        _started = true;
-    }
+        private bool _started;
 
-    private void Update()
-    {
-        if (!_started)
-            return;
-        
-        if (CurrentSource.time > _clip.length - _offset)
+        private void Start()
         {
-            Play(CurrentSource == _source1 ? _source2 : _source1);
+            if (_playOnStart)
+                Play();
         }
-    }
 
-    private void Play(AudioSource audioSource)
-    {
-        audioSource.clip = _clip;
-        audioSource.Play();
+        public void Play()
+        {
+            Play(_source1);
 
-        CurrentSource = audioSource;
+            _started = true;
+        }
+
+        private void Update()
+        {
+            if (!_started)
+                return;
+
+            if (CurrentSource.time > _clip.length - _offset)
+            {
+                Play(CurrentSource == _source1 ? _source2 : _source1);
+            }
+        }
+
+        private void Play(AudioSource audioSource)
+        {
+            audioSource.clip = _clip;
+            audioSource.Play();
+
+            CurrentSource = audioSource;
+        }
     }
 }
