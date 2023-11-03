@@ -54,6 +54,12 @@ namespace AudioControlling
         
         public void Play(int id)
         {
+            if (!_audioSettingsManager)
+            {
+                Debug.LogError($"You need to set {nameof(_audioSettingsManager)} of {name}/{nameof(AudioManager)}");
+                return;
+            }
+            
             var trackSettings = _audioSettingsManager.Get(id);
 
             Play(trackSettings);
