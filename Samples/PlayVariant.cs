@@ -11,7 +11,7 @@ namespace AudioControlling.Samples
 
         public void Play()
         {
-            Debug.Log("Play Variant");
+            //Debug.Log("Play Variant");
 
             AudioManager.Instance.Play(AudioSettingsManagerSO.Instance.GetTrackVariant(_groupTag));
         }
