@@ -17,6 +17,7 @@ namespace AudioControlling
         [SerializeField] private float _volumeScale = 1f;
         [SerializeField] private bool _loop;
         [SerializeField] private string _groupTag;
+        [SerializeField] private bool _dontPlayOnCollision;
 
         public AudioClip Clip => _clip;
         public int ID => _id;
@@ -36,5 +37,6 @@ namespace AudioControlling
         public string GroupTag => _groupTag;
 
         public bool IsInGroup => !string.IsNullOrEmpty(_groupTag);
+        public bool DontPlayOnCollision => _dontPlayOnCollision;
     }
 }

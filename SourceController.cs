@@ -13,8 +13,9 @@ namespace AudioControlling
         private AudioSource _source;
         private Coroutine _waitForEndCoroutine;
 
-        public bool IsAvailable { get; private set; } = true;
+        public bool IsAvailable => TrackSettings == null;
         public bool IsPitched { get; private set; }
+        public AudioTrackSettings TrackSettings { get; private set; }
 
         public float Volume
         {
@@ -29,6 +30,8 @@ namespace AudioControlling
 
         public void Play(AudioTrackSettings trackSettings)
         {
+            TrackSettings = trackSettings;
+            
             ResetPitch();
             Volume = 1;
             _source.loop = false;
@@ -40,7 +43,7 @@ namespace AudioControlling
 
                 _source.PlayOneShot(trackSettings.Clip, trackSettings.VolumeScale);
 
-                WaitForPlayOneShot(trackSettings.Clip);
+                WaitForClip(trackSettings.Clip);
             }
             else
             {
@@ -49,6 +52,9 @@ namespace AudioControlling
 
                 _source.clip = trackSettings.Clip;
                 _source.Play();
+                
+                if (!_source.loop)
+                    WaitForClip(trackSettings.Clip);
             }
         }
 
@@ -59,13 +65,11 @@ namespace AudioControlling
             ResetPitch();
             if (_waitForEndCoroutine != null)
                 StopCoroutine(_waitForEndCoroutine);
-            IsAvailable = true;
+            TrackSettings = null;
         }
 
-        private void WaitForPlayOneShot(AudioClip clip)
+        private void WaitForClip(AudioClip clip)
         {
-            IsAvailable = false;
-
             _waitForEndCoroutine = StartCoroutine(WaitForEndCoroutine(clip));
         }
 
@@ -100,7 +104,7 @@ namespace AudioControlling
                 yield return null;
             }
 
-            IsAvailable = true;
+            TrackSettings = null;
         }
     }
 }

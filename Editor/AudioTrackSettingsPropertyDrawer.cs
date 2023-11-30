@@ -34,6 +34,10 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
         EditorGUI.PropertyField(position, volumeScaleProp);
         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
         
+        var dontPlayOnCollisionProp = property.FindPropertyRelative("_dontPlayOnCollision");
+        EditorGUI.PropertyField(position, dontPlayOnCollisionProp);
+        position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        
         if (playOneShotProp.boolValue)
         {
             var isPitchedProp = property.FindPropertyRelative("_isPitched");
@@ -83,6 +87,7 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
         var playOneShot = property.FindPropertyRelative("_playOneShot");
         height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // play one shot + space
         height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // volume + space
+        height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // dont play on collision + space
 
         if (playOneShot.boolValue)
         {

@@ -42,6 +42,16 @@ namespace AudioControlling
 
         public void Play(AudioTrackSettings trackSettings, SourceController source)
         {
+            if (trackSettings.DontPlayOnCollision)
+            {
+                if (_pool.GetUnavailable().Any(s =>
+                        s.TrackSettings == trackSettings || s.TrackSettings.GroupTag == trackSettings.GroupTag))
+                {
+                    _pool.Release(source);
+                    return;
+                }
+            }
+            
             source.Play(trackSettings);
         }
 

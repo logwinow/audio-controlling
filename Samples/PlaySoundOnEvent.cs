@@ -10,6 +10,7 @@ namespace AudioControlling.Samples
         [SerializeField] private bool _warmed = true;
         [AudioID] [SerializeField] private int _audioID;
         [SerializeField] private SourceController _source;
+        [SerializeField] private string _groupTag;
 
         private void Start()
         {
@@ -20,11 +21,18 @@ namespace AudioControlling.Samples
         {
             if (!_warmed)
                 return;
+
+            var audioID = _audioID;
+
+            if (!string.IsNullOrEmpty(_groupTag))
+            {
+                audioID = AudioSettingsManagerSO.Instance.GetTrackVariant(_groupTag).ID;
+            }
             
             if (_source)
-                AudioManager.Instance.Play(_audioID, _source);
+                AudioManager.Instance.Play(audioID, _source);
             else
-                AudioManager.Instance.Play(_audioID);
+                AudioManager.Instance.Play(audioID);
         }
     }
 }
