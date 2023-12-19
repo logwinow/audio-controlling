@@ -34,5 +34,29 @@ namespace AudioControlling.Samples
             else
                 AudioManager.Instance.Play(audioID);
         }
+
+        public void SetLayersMute(bool value)
+        {
+            if (AudioManager.Instance.TryGetSource(_audioID, out var source))
+            {
+                source.MuteLayers(value);
+            }
+        }
+
+        public void FadeInLayers()
+        {
+            if (AudioManager.Instance.TryGetSource(_audioID, out var source))
+            {
+                source.FadeInLayers();
+            }
+        }
+        
+        public void FadeOutLayers()
+        {
+            if (AudioManager.Instance.TryGetSource(_audioID, out var source))
+            {
+                source.FadeOutLayers();
+            }
+        }
     }
 }

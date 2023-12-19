@@ -67,6 +67,35 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
             var loopProp = property.FindPropertyRelative("_loop");
             EditorGUI.PropertyField(position, loopProp);
             position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+            
+            var fadeProp = property.FindPropertyRelative("_fade");
+            EditorGUI.PropertyField(position, fadeProp);
+            position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+            if (fadeProp.boolValue)
+            {
+                position.x += 15;
+                
+                var fadeInDuration = property.FindPropertyRelative("_fadeInDuration");
+                EditorGUI.PropertyField(position, fadeInDuration);
+                position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                
+                var fadeOutDuration = property.FindPropertyRelative("_fadeOutDuration");
+                EditorGUI.PropertyField(position, fadeOutDuration);
+                position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                
+                position.x -= 15;
+            }
+            
+            var hasLayersProp = property.FindPropertyRelative("_hasLayers");
+            EditorGUI.PropertyField(position, hasLayersProp);
+            position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+            if (hasLayersProp.boolValue)
+            {
+                var layersProp = property.FindPropertyRelative("_layers");
+                EditorGUI.PropertyField(position, layersProp);
+            }
         }
     }
 
@@ -102,7 +131,23 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
         }
         else
         {
-            height += EditorGUIUtility.singleLineHeight; // loop
+            height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 3; // loop + has layers + fade + space x3
+            
+            var fadeProp = property.FindPropertyRelative("_fade");
+
+            if (fadeProp.boolValue)
+            {
+                height += (EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing) * 2; // fade in + fade out durations
+            }
+            
+            var hasLayersProp = property.FindPropertyRelative("_hasLayers");
+
+            if (hasLayersProp.boolValue)
+            {
+                height += EditorGUI.GetPropertyHeight(property.FindPropertyRelative("_layers")); // layers
+                
+                height += EditorGUIUtility.standardVerticalSpacing; // space
+            }
         }
 
         return height;

@@ -18,6 +18,11 @@ namespace AudioControlling
         [SerializeField] private bool _loop;
         [SerializeField] private string _groupTag;
         [SerializeField] private bool _dontPlayOnCollision;
+        [SerializeField] private bool _hasLayers;
+        [SerializeField] private AudioClip[] _layers;
+        [SerializeField] private bool _fade;
+        [SerializeField] private float _fadeInDuration = 0.2f;
+        [SerializeField] private float _fadeOutDuration = 0.2f;
 
         public AudioClip Clip => _clip;
         public int ID => _id;
@@ -38,5 +43,15 @@ namespace AudioControlling
 
         public bool IsInGroup => !string.IsNullOrEmpty(_groupTag);
         public bool DontPlayOnCollision => _dontPlayOnCollision;
+
+        public bool HasLayers => _hasLayers;
+
+        public AudioClip[] Layers => _layers;
+
+        public bool Fade => _fade;
+
+        public float FadeInDuration => _fadeInDuration;
+
+        public float FadeOutDuration => _fadeOutDuration;
     }
 }

@@ -20,6 +20,8 @@ public class AudioIDPropertyDrawer : PropertyDrawer
                     AudioSettingsManagerSO.Instance.AudioTrackSettings)
                 .SetSelectedIndex(audioTrack => audioTrack.ID == property.intValue)
                 .SetOptionsNames(track => $"{track.Title} ({track.ID})")
+                .AddOption(new Separator())
+                .AddOption(new SelectAssetCommand(AudioSettingsManagerSO.Instance))
                 .DrawAndGet()?.ID ?? -1;
     }
 }

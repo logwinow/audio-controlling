@@ -89,9 +89,16 @@ namespace AudioControlling
             }
         }
 
-        private SourceController GetSource()
+        public SourceController GetSource()
         {
             return _pool.GetOrCreate();
+        }
+
+        public bool TryGetSource(int audioTrackID, out SourceController source)
+        {
+            source = _pool.GetUnavailable().FirstOrDefault(s => s.TrackSettings.ID == audioTrackID);
+
+            return source;
         }
     }
 }
