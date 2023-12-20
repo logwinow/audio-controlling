@@ -12,7 +12,9 @@ namespace AudioControlling.Samples
         [SerializeField] private SourceController _source;
         [SerializeField] private string _groupTag;
 
-        private void Start()
+        public int AudioID => _audioID;
+
+        protected virtual void Start()
         {
             _warmed = true;
         }
@@ -20,7 +22,10 @@ namespace AudioControlling.Samples
         public void Play()
         {
             if (!_warmed)
+            {
+                Debug.Log($"{nameof(PlaySoundOnEvent)}/{GetType().Name}/{name}/{nameof(Play)}: audio player isn't warmed yet");
                 return;
+            }
 
             var audioID = _audioID;
 

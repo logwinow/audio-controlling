@@ -22,7 +22,7 @@ namespace AudioControlling
 
         public IEnumerable<AudioTrackSettings> GetGroup(string groupTag)
         {
-            return _audioTrackSettings.Where(trackSettings => trackSettings.GroupTag == groupTag);
+            return _audioTrackSettings.Where(trackSettings => trackSettings.PlayOneShot && trackSettings.GroupTag == groupTag);
         }
 
         public AudioTrackSettings GetTrackVariant(string groupTag)

@@ -44,13 +44,39 @@ namespace AudioControlling
         {
             if (trackSettings.DontPlayOnCollision)
             {
-                if (_pool.GetUnavailable().Any(s =>
-                        s.TrackSettings == trackSettings || s.TrackSettings.GroupTag == trackSettings.GroupTag))
+                var currentPlayingSources = _pool.GetUnavailable();
+                var hasCollision = currentPlayingSources.Any(s =>
+                {
+                    if (s.TrackSettings == trackSettings)
+                    {
+                        Debug.Log($"{nameof(AudioManager)}/{nameof(Play)}: collision detected with {trackSettings.Clip.name}. It is already playing");
+                        return true;
+                    }
+
+                    if (!trackSettings.PlayOneShot || !s.TrackSettings.PlayOneShot)
+                        return false;
+
+                    if (!string.IsNullOrEmpty(trackSettings.GroupTag) &&
+                        s.TrackSettings.GroupTag == trackSettings.GroupTag)
+                    {
+                        Debug.Log($"{nameof(AudioManager)}/{nameof(Play)}: collision detected with {trackSettings.Clip.name}'s group '{trackSettings.GroupTag}'. It's group already playing");
+                        return true;
+                    }
+
+                    return false;
+                });
+                
+                if (hasCollision)
                 {
                     _pool.Release(source);
+                    
+                    Debug.Log($"{nameof(AudioManager)}/{nameof(Play)}: collision detected with {trackSettings.Clip.name}. It wouldn't be played");
+                    
                     return;
                 }
             }
+            
+            Debug.Log($"{nameof(AudioManager)}/{nameof(Play)}: play track {trackSettings.Clip.name}");
             
             source.Play(trackSettings);
         }
