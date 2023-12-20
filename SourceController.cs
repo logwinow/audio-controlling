@@ -214,6 +214,7 @@ namespace AudioControlling
         public void FadeOutAndStop()
         {
             StopProcessCoroutine();
+            Loop = false;
             
             DoFadeOutTween();
             _fadeTween.OnComplete(Stop);
