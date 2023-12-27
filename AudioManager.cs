@@ -120,6 +120,11 @@ namespace AudioControlling
             return _pool.GetOrCreate();
         }
 
+        public IEnumerable<SourceController> GetSources(string sourceName)
+        {
+            return _pool.GetUnavailable().Where(s => s.SourceName == sourceName);
+        }
+
         public bool TryGetSource(int audioTrackID, out SourceController source)
         {
             source = _pool.GetUnavailable().FirstOrDefault(s => s.TrackSettings.ID == audioTrackID);

@@ -22,6 +22,7 @@ namespace AudioControlling
         public bool IsAvailable => TrackSettings == null;
         public bool IsPitched => Pitch != 1;
         public AudioTrackSettings TrackSettings { get; private set; }
+        public string SourceName { get; set; } = null;
 
         public float Volume
         {
@@ -124,6 +125,7 @@ namespace AudioControlling
                 StopCoroutine(_waitForPlayOneShotCoroutine);
             TrackSettings = null;
             _fadeTween?.Kill();
+            SourceName = null;
         }
 
         public void MuteLayers(bool value)
