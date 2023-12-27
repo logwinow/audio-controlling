@@ -11,10 +11,14 @@ namespace AudioControlling
 {
     public class AudioManager : SingletonMono<AudioManager>
     {
+        private Pool<SourceController> _pool;
+        private List<RuntimeAudioSettings> _audioSettings = new();
+        
         [SerializeField] private AudioSettingsManagerSO _audioSettingsManager;
         [SerializeField] private SourceController _sourcePrefab;
 
-        private Pool<SourceController> _pool;
+        public List<RuntimeAudioSettings> AudioSettings => _audioSettings;
+        public bool Initialized { get; private set; }
 
         protected override void OnAwake()
         {
@@ -33,6 +37,8 @@ namespace AudioControlling
                 {
                     return source.IsAvailable;
                 });
+
+            Initialized = true;
         }
 
         public void Play(int id, SourceController source)
@@ -77,6 +83,11 @@ namespace AudioControlling
             }
             
             Debug.Log($"{nameof(AudioManager)}/{nameof(Play)}: play track {trackSettings.Clip.name}");
+
+            if (trackSettings.HasType && TryGetSettings(trackSettings.AudioType, out var settings))
+            {
+                source.ApplySettings(settings);
+            }
             
             source.Play(trackSettings);
         }
@@ -130,6 +141,51 @@ namespace AudioControlling
             source = _pool.GetUnavailable().FirstOrDefault(s => s.TrackSettings.ID == audioTrackID);
 
             return source;
+        }
+
+        private bool TryGetSettings(string audioType, out RuntimeAudioSettings settings)
+        {
+            return _audioSettings.TryFind(s => s.AudioType == audioType, out settings);
+        }
+
+        private RuntimeAudioSettings GetSettings(string audioType)
+        {
+            if (!TryGetSettings(audioType, out var settings))
+            {
+                settings = new RuntimeAudioSettings(audioType);
+            }
+
+            return settings;
+        }
+
+        public void SetMute(string audioType, bool value)
+        {
+            var settings = GetSettings(audioType); 
+            settings.Mute = value;
+            
+            ApplySettings(settings);
+        }
+
+        public void SetVolume(string audioType, float volume)
+        {
+            var settings = GetSettings(audioType); 
+            settings.Volume = volume;
+            
+            ApplySettings(settings);
+        }
+
+        public void ApplySettings(RuntimeAudioSettings settings)
+        {
+            var oldSettings = _audioSettings.Find(s => s.AudioType == settings.AudioType);
+
+            if (oldSettings != null)
+            {
+                _audioSettings.Remove(oldSettings);
+            }
+            
+            _audioSettings.Add(settings);
+            
+            _pool.GetUnavailable().Where(s => s.TrackSettings.HasType).ForEach(s => s.ApplySettings(settings));
         }
     }
 }

@@ -21,7 +21,6 @@ public class TrackLayer
     private AudioTrackSettings _trackSettings;
     private float _partial;
     private float _maxVolume;
-    private bool _mute;
     private Tween _fadeTween;
 
     private float Partial
@@ -60,13 +59,8 @@ public class TrackLayer
 
     public bool Mute
     {
-        get => _mute;
-        set
-        {
-            _mute = value;
-            
-            UpdateVolume();
-        }
+        get => _audioSource.mute;
+        set => _audioSource.mute = value;
     }
     
     public void Destroy()
@@ -107,12 +101,6 @@ public class TrackLayer
 
     private void UpdateVolume()
     {
-        if (Mute)
-        {
-            _audioSource.volume = 0;
-            return;
-        }
-
         _audioSource.volume = Partial * MaxVolume;
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AudioControlling;
+using DiractionTeam.AdditionalLinq;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,6 +36,60 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
         EditorGUI.PropertyField(position, volumeScaleProp);
         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
         
+        var hasTypeProp = property.FindPropertyRelative("_hasType");
+        EditorGUI.PropertyField(position, hasTypeProp);
+        position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+
+        if (hasTypeProp.boolValue)
+        {
+            position.x += 15;
+            position.width -= 15;
+            var soundTypeProp = property.FindPropertyRelative("_audioType");
+            if (soundTypeProp.stringValue != "#")
+            {
+                var selectButtonPosition = position;
+                selectButtonPosition.width = 60;
+
+                var soundTypePosition = position;
+                soundTypePosition.x += selectButtonPosition.x + 15;
+                soundTypePosition.width -= selectButtonPosition.x + 15;
+
+                soundTypeProp.stringValue = EditorGUI.TextField(soundTypePosition, soundTypeProp.stringValue);
+
+                if (GUI.Button(selectButtonPosition, "Select"))
+                {
+                    soundTypeProp.stringValue = "#";
+                }
+            }
+            else
+            {
+                var soundTypes = AudioSettingsManagerSO.Instance.AudioTrackSettings
+                    .Where(track => track.HasType)
+                    .Select(track => track.AudioType);
+                
+                var createNew = false;
+                var selectSoundTypePopup =
+                    new EditorGUIPopup<string>(new GUIContent("Select type"), position, soundTypes)
+                        .SetDefaultValue("#")
+                        .SetOptionsNames()
+                        .AddOption(new Separator())
+                        .AddOption(new Command("Create new", () =>
+                        {
+                            createNew = true;
+                            soundTypeProp.stringValue = "";
+                        }));
+                selectSoundTypePopup.Draw();
+
+                if (!createNew)
+                    soundTypeProp.stringValue = selectSoundTypePopup.GetSelected();
+            }
+
+            position.x -= 15;
+            position.width += 15;
+
+            position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+        }
+
         var dontPlayOnCollisionProp = property.FindPropertyRelative("_dontPlayOnCollision");
         EditorGUI.PropertyField(position, dontPlayOnCollisionProp);
         position.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
@@ -116,6 +172,15 @@ public class AudioTrackSettingsPropertyDrawer : PropertyDrawer
         var playOneShot = property.FindPropertyRelative("_playOneShot");
         height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // play one shot + space
         height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // volume + space
+        
+        var hasTypeProp = property.FindPropertyRelative("_hasType");
+        height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // has type + space
+
+        if (hasTypeProp.boolValue)
+        {
+            height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // type + space
+        }
+        
         height += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing; // dont play on collision + space
 
         if (playOneShot.boolValue)

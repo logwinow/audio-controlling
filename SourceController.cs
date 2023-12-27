@@ -18,6 +18,9 @@ namespace AudioControlling
         private Coroutine _waitForPlayOneShotCoroutine;
         private Tween _fadeTween;
         private List<TrackLayer> _layers = null;
+        private float _volume;
+        private float _volumeScaler = 1f;
+        private RuntimeAudioSettings _settings;
 
         public bool IsAvailable => TrackSettings == null;
         public bool IsPitched => Pitch != 1;
@@ -26,11 +29,11 @@ namespace AudioControlling
 
         public float Volume
         {
-            get => _source.volume;
+            get => _volume;
             set
             {
-                _source.volume = value;
-                _layers?.ForEach(l => l.MaxVolume = value);
+                _volume = value;
+                UpdateVolume();
             }
         }
 
@@ -82,12 +85,17 @@ namespace AudioControlling
             Volume = 1f;
             Loop = false;
 
+            if (_settings != null)
+            {
+                ApplySettings(_settings);
+            }
+
             if (trackSettings.PlayOneShot)
             {
                 if (trackSettings.IsPitched)
                     Pitch = Random.Range(trackSettings.PitchMin, trackSettings.PitchMax);
 
-                _source.PlayOneShot(trackSettings.Clip, trackSettings.VolumeScale);
+                _source.PlayOneShot(trackSettings.Clip, trackSettings.VolumeScale * _volumeScaler);
 
                 WaitForPlayOnShot();
             }
@@ -126,11 +134,20 @@ namespace AudioControlling
             TrackSettings = null;
             _fadeTween?.Kill();
             SourceName = null;
+            _volumeScaler = 1f;
+            _settings = null;
+            Mute(false);
         }
 
         public void MuteLayers(bool value)
         {
             _layers?.ForEach(l => l.Mute = value);
+        }
+
+        public void Mute(bool value)
+        {
+            _source.mute = value;
+            MuteLayers(value);
         }
 
         public void FadeInLayers()
@@ -220,6 +237,31 @@ namespace AudioControlling
             
             DoFadeOutTween();
             _fadeTween.OnComplete(Stop);
+        }
+
+        public void ApplySettings(RuntimeAudioSettings audioSettings)
+        {
+            if (TrackSettings == null)
+            {
+                _settings = audioSettings;
+                return;
+            }
+            
+            Mute(audioSettings.Mute);
+            _volumeScaler = audioSettings.Volume;
+            UpdateVolume();
+        }
+
+        private void UpdateVolume()
+        {
+            if (TrackSettings.PlayOneShot)
+            {
+                _source.volume = _volume;
+                return;
+            }
+            
+            _source.volume = _volume * _volumeScaler;
+            _layers?.ForEach(l => l.MaxVolume = _source.volume);
         }
 
         private void DoFadeInTween()

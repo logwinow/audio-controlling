@@ -23,6 +23,8 @@ namespace AudioControlling
         [SerializeField] private bool _fade;
         [SerializeField] private float _fadeInDuration = 0.2f;
         [SerializeField] private float _fadeOutDuration = 0.2f;
+        [SerializeField] private bool _hasType = false;
+        [SerializeField] private string _audioType = null;
 
         public AudioClip Clip => _clip;
         public int ID => _id;
@@ -53,5 +55,7 @@ namespace AudioControlling
         public float FadeInDuration => _fadeInDuration;
 
         public float FadeOutDuration => _fadeOutDuration;
+        public string AudioType => _audioType;
+        public bool HasType => _hasType && _audioType != "#";
     }
 }
